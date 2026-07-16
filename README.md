@@ -5,6 +5,9 @@
 <p align="center">
   <img src="screenshots/gallery.png" alt="Image gallery example on Android" width="320">
 </p>
+<p align="center">
+  <a href="screenshots/video.mp4"><strong>Watch the 38-second Android demo (MP4)</strong></a>
+</p>
 
 ## At a glance
 
