@@ -1,0 +1,54 @@
+# Dart and Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/pubspec.lock
+build/
+coverage/
+doc/api/
+*.symbols
+app.*.map.json
+
+# Android and Gradle
+**/.gradle/
+**/.kotlin/
+**/captures/
+**/.cxx/
+**/.externalNativeBuild/
+**/local.properties
+**/key.properties
+**/*.jks
+**/*.keystore
+**/android/.project
+**/android/.settings/
+
+# IntelliJ IDEA and Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Visual Studio Code
+.vscode/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+*~
