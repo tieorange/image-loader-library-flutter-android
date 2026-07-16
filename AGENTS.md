@@ -239,6 +239,7 @@ ship in the same PR as the behavior they cover.
 
 - Use Mockito-Kotlin for collaborator mocks.
 - Use Coroutines Test for deterministic scheduling and virtual time.
+- Use JUnit Jupiter 5.13.4 on JUnit Platform 1.13.4.
 - Use real temporary directories for disk behavior.
 - Preserve tests for fresh/expired persistence, reopening a fresh entry,
   same-URL coalescing, invalidation that older work cannot undo, and failures
