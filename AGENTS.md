@@ -304,8 +304,9 @@ flutter test integration_test -d <android-device>
 ```
 
 Run focused tests during iteration, then run the complete milestone matrix
-before opening a PR. Never claim a check passed unless its command completed
-successfully.
+locally before opening a PR. Do not add a GitHub Actions workflow unless the
+user explicitly requests one. Never claim a check passed unless its command
+completed successfully.
 
 ## Code Style
 
