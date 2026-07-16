@@ -9,3 +9,5 @@
 - Add focused channel parsing, error mapping, and widget lifecycle tests.
 - Add the example gallery domain, remote manifest data source, repository error
   mapping, native cache boundary, and dependency composition root.
+- Add the responsive example gallery UI, Cubit ViewModel, cache-clear feedback,
+  and focused presentation tests.

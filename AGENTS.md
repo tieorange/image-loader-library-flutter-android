@@ -129,7 +129,7 @@ Allowed plugin runtime dependencies:
 
 Allowed example architecture dependencies:
 
-- `flutter_bloc`.
+- `flutter_bloc` 9.1.1.
 - `fpdart`.
 - `get_it`.
 - `equatable`.
@@ -256,7 +256,7 @@ ship in the same PR as the behavior they cover.
 ### Dart and Flutter
 
 - Use Mocktail for mocked boundaries.
-- Use `bloc_test` for Cubit transition tests.
+- Use `bloc_test` 10.0.0 for Cubit transition tests.
 - Use Flutter's test binary messenger for actual MethodChannel contract tests.
 - Test core Dart result parsing with representative malformed/error cases rather
   than every field and code.
