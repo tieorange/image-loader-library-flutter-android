@@ -7,3 +7,5 @@
 - Add focused native cache, downloader, concurrency, and Java compile checks.
 - Add the MethodChannel bridge, typed Dart cache API, and file-backed image widget.
 - Add focused channel parsing, error mapping, and widget lifecycle tests.
+- Add the example gallery domain, remote manifest data source, repository error
+  mapping, native cache boundary, and dependency composition root.
