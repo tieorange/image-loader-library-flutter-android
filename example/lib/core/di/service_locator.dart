@@ -9,6 +9,7 @@ import '../../features/image_gallery/data/sources/native_cache_data_source.dart'
 import '../../features/image_gallery/domain/repositories/gallery_repository.dart';
 import '../../features/image_gallery/domain/use_cases/clear_image_cache.dart';
 import '../../features/image_gallery/domain/use_cases/get_images.dart';
+import '../../features/image_gallery/presentation/cubit/image_gallery_cubit.dart';
 
 final GetIt serviceLocator = GetIt.instance;
 
@@ -38,5 +39,11 @@ void configureDependencies() {
     )
     ..registerLazySingleton(
       () => ClearImageCache(serviceLocator<GalleryRepository>()),
+    )
+    ..registerFactory(
+      () => ImageGalleryCubit(
+        serviceLocator<GetImages>(),
+        serviceLocator<ClearImageCache>(),
+      ),
     );
 }
