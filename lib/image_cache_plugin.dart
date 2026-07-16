@@ -1,7 +1,7 @@
-/// Entry point for the image cache plugin.
-///
-/// Platform-backed image loading APIs will be added in a later milestone.
-class ImageCachePlugin {
-  /// Creates an image cache plugin facade.
-  const ImageCachePlugin();
-}
+library;
+
+export 'src/cached_image_file.dart';
+export 'src/image_cache_client.dart';
+export 'src/image_cache_exception.dart';
+export 'src/image_cache_plugin.dart';
+export 'src/native_cached_image.dart';
