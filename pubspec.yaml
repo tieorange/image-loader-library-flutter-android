@@ -1,0 +1,29 @@
+name: image_cache_plugin
+description: Android Flutter plugin for downloading and caching remote images with a native Kotlin implementation.
+version: 0.0.1
+repository: https://github.com/tieorange/image-loader-library-flutter-android
+issue_tracker: https://github.com/tieorange/image-loader-library-flutter-android/issues
+topics:
+  - android
+  - image-cache
+  - image-loading
+
+environment:
+  sdk: ^3.11.5
+  flutter: '>=3.41.9'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.tieorange.image_cache_plugin.bridge
+        pluginClass: ImageCachePlugin
