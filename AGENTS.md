@@ -47,7 +47,7 @@ requires a narrowly scoped change.
 Do not use a company-owned package namespace because this repository is owned
 by the candidate.
 
-## Planned Structure
+## Repository Structure
 
 ```text
 lib/
@@ -70,8 +70,6 @@ example/lib/
     domain/
     presentation/
 ```
-
-Update this section after scaffolding if generated paths differ.
 
 ## Architecture Boundaries
 
