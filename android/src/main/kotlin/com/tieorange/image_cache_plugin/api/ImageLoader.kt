@@ -76,44 +76,47 @@ class ImageLoader private constructor(
 
     /** Loads an image and reports completion on the main thread. */
     fun load(url: String, callback: ImageLoaderCallback): ImageRequest = request {
-        try {
-            val result = repository.load(url)
-            currentCoroutineContext().ensureActive()
-            callback.onSuccess(result)
+        val result = try {
+            repository.load(url)
         } catch (error: CancellationException) {
             throw error
         } catch (error: Exception) {
             currentCoroutineContext().ensureActive()
             callback.onError(error)
+            return@request
         }
+        currentCoroutineContext().ensureActive()
+        callback.onSuccess(result)
     }
 
     /** Evicts one URL and reports completion on the main thread. */
     fun evict(url: String, callback: CacheOperationCallback): ImageRequest = request {
         try {
             evict(url)
-            currentCoroutineContext().ensureActive()
-            callback.onSuccess()
         } catch (error: CancellationException) {
             throw error
         } catch (error: Exception) {
             currentCoroutineContext().ensureActive()
             callback.onError(error)
+            return@request
         }
+        currentCoroutineContext().ensureActive()
+        callback.onSuccess()
     }
 
     /** Clears all entries and reports completion on the main thread. */
     fun clear(callback: CacheOperationCallback): ImageRequest = request {
         try {
             clear()
-            currentCoroutineContext().ensureActive()
-            callback.onSuccess()
         } catch (error: CancellationException) {
             throw error
         } catch (error: Exception) {
             currentCoroutineContext().ensureActive()
             callback.onError(error)
+            return@request
         }
+        currentCoroutineContext().ensureActive()
+        callback.onSuccess()
     }
 
     /** Loads into an ImageView. This synchronous registration method requires the main thread. */
@@ -129,6 +132,7 @@ class ImageLoader private constructor(
         target.setImageDrawable(placeholder)
         lateinit var handle: ImageRequest
         val job = scope.launch(start = CoroutineStart.LAZY) {
+            var completion: Pair<CachedImageFile, Bitmap>? = null
             try {
                 val captured = repository.generation(url)
                 val result = repository.load(url)
@@ -142,8 +146,7 @@ class ImageLoader private constructor(
                 }.also { memory.put(url, MemoryEntry(it, captured, result.file.path)) }
                 ensureActive()
                 if (targets[target]?.request === handle && repository.generation(url) == captured) {
-                    target.setImageBitmap(bitmap)
-                    callback?.onSuccess(result)
+                    completion = result to bitmap
                 }
             } catch (_: CancellationException) {
             } catch (error: Exception) {
@@ -153,6 +156,10 @@ class ImageLoader private constructor(
                 }
             } finally {
                 if (targets[target]?.request === handle) targets.remove(target)
+            }
+            completion?.let { (result, bitmap) ->
+                target.setImageBitmap(bitmap)
+                callback?.onSuccess(result)
             }
         }
         handle = ImageRequest(job)
