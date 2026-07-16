@@ -107,13 +107,22 @@ class _GalleryBody extends StatelessWidget {
             : constraints.maxWidth >= 600
             ? 3
             : 2;
+        const horizontalPadding = 32.0;
+        const spacing = 12.0;
+        const labelHeight = 52.0;
+        final tileWidth =
+            (constraints.maxWidth -
+                horizontalPadding -
+                spacing * (columns - 1)) /
+            columns;
+        final tileHeight = tileWidth * 9 / 16 + labelHeight;
         return GridView.builder(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: columns,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.82,
+            crossAxisSpacing: spacing,
+            mainAxisSpacing: spacing,
+            childAspectRatio: tileWidth / tileHeight,
           ),
           itemCount: state.images.length,
           itemBuilder: (context, index) => _GalleryTile(
@@ -144,10 +153,11 @@ class _GalleryTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
+            AspectRatio(
+              aspectRatio: 16 / 9,
               child: NativeCachedImage(
                 url: image.imageUrl,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
                 cacheWidth: 720,
                 cacheHeight: 720,
                 excludeFromSemantics: true,
@@ -170,14 +180,20 @@ class _GalleryTile extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              child: Text(
-                'IMAGE ${image.id}',
-                semanticsLabel: 'Image ID ${image.id}',
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 1.2,
+            SizedBox(
+              height: 52,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'IMAGE ${image.id}',
+                    semanticsLabel: 'Image ID ${image.id}',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
                 ),
               ),
             ),
