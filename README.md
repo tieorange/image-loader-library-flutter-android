@@ -5,9 +5,6 @@
 <p align="center">
   <img src="screenshots/gallery.png" alt="Image gallery example on Android" width="320">
 </p>
-<p align="center">
-  <a href="screenshots/video.mp4"><strong>Watch the 38-second Android demo (MP4)</strong></a>
-</p>
 
 ## At a glance
 
@@ -32,6 +29,17 @@
 | Support native consumers | `ImageLoader` offers Kotlin suspend functions, Java callbacks, cancellable requests, placeholders, and `ImageView` target replacement. |
 | Demonstrate app architecture | The example separates data, domain, presentation, use cases, repositories, and constructor-injected Cubit ViewModels. |
 | Display the supplied gallery robustly | The UI shows IDs, loading/error states, per-image failures, retry, and cache clear in a responsive single-column list. |
+
+## Demo
+
+<p align="center">
+  <a href="screenshots/video.mp4">
+    <img src="screenshots/video-preview.gif" alt="Animated preview of the Android example" width="320">
+  </a>
+</p>
+<p align="center">
+  <a href="screenshots/video.mp4"><strong>Open the full 38-second Android demo (MP4)</strong></a>
+</p>
 
 ## Reviewer quick path
 
