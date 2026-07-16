@@ -9,20 +9,23 @@ cache with a four-hour freshness period.
 
 ## Status
 
-Implementation and project scaffolding are still being developed. The plugin
-is not yet ready for use, and no runtime behavior described above should be
-considered complete.
+The Android plugin and example application foundations are in place. Native
+image loading and cache behavior are not implemented yet.
 
 ## Expected development workflow
 
-After the Flutter plugin and example application are scaffolded, development
-and verification are expected to use standard Flutter commands such as:
+Plugin checks run from the repository root:
 
 ```bash
 flutter pub get
 flutter analyze
 flutter test
-cd example
+```
+
+The example Android build runs from `example/`:
+
+```bash
+flutter pub get
 flutter build apk --debug
 ```
 

@@ -228,43 +228,52 @@ compile check, tests, and README update.
 
 ## Testing Standards
 
-Tests ship in the same PR as the behavior they cover.
+Automated tests are not an assignment requirement. Keep the foundation smoke
+tests and add only a concise, high-signal set that demonstrates senior testing
+skill around critical correctness, boundaries, and state transitions. Avoid
+exhaustive matrices, repetitive delegation tests, and one test per error code,
+malformed DTO field, redirect permutation, or UI state. Focused tests should
+ship in the same PR as the behavior they cover.
 
 ### Android
 
 - Use Mockito-Kotlin for collaborator mocks.
 - Use Coroutines Test for deterministic scheduling and virtual time.
 - Use real temporary directories for disk behavior.
-- Verify both success and failure paths.
+- Preserve tests for fresh/expired persistence, reopening a fresh entry,
+  same-URL coalescing, invalidation that older work cannot undo, and failures
+  leaving no valid entry.
+- Use only a small representative downloader and image-validation sample.
 - Add Java compile source for public Java interoperability.
-- Test invalidation races and duplicate request coalescing explicitly.
-- Test two repository instances sharing one cache directory.
-- Test reopen/crash-recovery states and pruning against active work.
-- Test invalidation between generation validation and atomic rename.
-- Test redirect policy and encoded/decoded image limits.
+- Avoid repetitive native facade/API delegation tests.
 
 ### Dart and Flutter
 
 - Use Mocktail for mocked boundaries.
 - Use `bloc_test` for Cubit transition tests.
 - Use Flutter's test binary messenger for actual MethodChannel contract tests.
-- Use widget tests for placeholders, errors, retries, clearing, and semantics.
+- Test core Dart result parsing with representative malformed/error cases rather
+  than every field and code.
+- Cover core plugin widget placeholder, success, failure, and stale-result
+  behavior with a small focused set.
+- Test repository `Either` mapping and key Cubit load success/failure and clear
+  success/failure transitions.
+- Keep one representative gallery widget test rather than a UI-state matrix.
 - Reset get_it between tests; tests must not depend on execution order.
 - Avoid live network access in unit and widget tests.
 
 ### Bridge lifecycle
 
-- Test main-thread and exactly-once MethodChannel completion.
-- Test detach during load, eviction, and clear.
-- Verify pending calls settle with `cancelled`, new calls are rejected, and late
-  completions are ignored.
+- Keep a small contract/lifecycle sample covering representative completion,
+  main-thread delivery, and detach with a pending call and late completion.
+- Do not repeat lifecycle scenarios for every channel method.
 
 ### Integration
 
-- Device integration tests may use the supplied endpoint.
+- One device integration flow is optional and may use the supplied endpoint.
 - Keep live network integration outside the fast mandatory unit-test job.
 - Document network and device prerequisites.
-- Validate network source, disk source, eviction, and complete clear end to end.
+- If included, cover network source, disk source, and one invalidation operation.
 
 Do not write handwritten fake implementations when Mockito, Mocktail, or the
 real lightweight value/storage object provides a clearer test.
