@@ -30,35 +30,55 @@ class ImageGalleryPage extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Native image shelf'),
-                Text(
-                  'Four-hour disk cache',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
-                ),
-              ],
+            title: const Text(
+              'Image gallery',
+              style: TextStyle(fontWeight: FontWeight.w700),
             ),
             actions: [
-              if (state.clearStatus == CacheClearStatus.clearing)
-                const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: SizedBox.square(
-                    dimension: 22,
-                    child: CircularProgressIndicator(strokeWidth: 2.5),
-                  ),
-                )
-              else
-                IconButton(
-                  tooltip: 'Clear image cache',
-                  onPressed: () =>
-                      context.read<ImageGalleryCubit>().clearCache(),
-                  icon: const Icon(Icons.cleaning_services_outlined),
-                ),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: state.clearStatus == CacheClearStatus.clearing
+                    ? const Padding(
+                        key: ValueKey('clearing'),
+                        padding: EdgeInsets.all(16),
+                        child: SizedBox.square(
+                          dimension: 22,
+                          child: CircularProgressIndicator(strokeWidth: 2.5),
+                        ),
+                      )
+                    : IconButton(
+                        key: const ValueKey('clear'),
+                        tooltip: 'Clear image cache',
+                        onPressed: () =>
+                            context.read<ImageGalleryCubit>().clearCache(),
+                        icon: const Icon(Icons.cleaning_services_outlined),
+                      ),
+              ),
             ],
           ),
-          body: SafeArea(child: _GalleryBody(state: state)),
+          body: SafeArea(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 320),
+              switchInCurve: Curves.easeOutCubic,
+              switchOutCurve: Curves.easeInCubic,
+              transitionBuilder: (child, animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0, 0.025),
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: child,
+                  ),
+                );
+              },
+              child: _GalleryBody(
+                key: ValueKey(state.loadStatus),
+                state: state,
+              ),
+            ),
+          ),
         );
       },
     );
@@ -66,7 +86,7 @@ class ImageGalleryPage extends StatelessWidget {
 }
 
 class _GalleryBody extends StatelessWidget {
-  const _GalleryBody({required this.state});
+  const _GalleryBody({required this.state, super.key});
 
   final ImageGalleryState state;
 
@@ -100,40 +120,23 @@ class _GalleryBody extends StatelessWidget {
         ),
       );
     }
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final columns = constraints.maxWidth >= 900
-            ? 4
-            : constraints.maxWidth >= 600
-            ? 3
-            : 2;
-        const horizontalPadding = 32.0;
-        const spacing = 12.0;
-        const labelHeight = 52.0;
-        final tileWidth =
-            (constraints.maxWidth -
-                horizontalPadding -
-                spacing * (columns - 1)) /
-            columns;
-        final tileHeight = tileWidth * 9 / 16 + labelHeight;
-        return GridView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: columns,
-            crossAxisSpacing: spacing,
-            mainAxisSpacing: spacing,
-            childAspectRatio: tileWidth / tileHeight,
-          ),
-          itemCount: state.images.length,
-          itemBuilder: (context, index) => _GalleryTile(
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+      itemCount: state.images.length,
+      separatorBuilder: (_, _) => const SizedBox(height: 16),
+      itemBuilder: (context, index) => Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 720),
+          child: _GalleryTile(
             key: ValueKey(
               '${state.cacheGeneration}:$index:${state.images[index].id}:'
               '${state.images[index].imageUrl}',
             ),
             image: state.images[index],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
@@ -150,17 +153,30 @@ class _GalleryTile extends StatelessWidget {
       child: Card(
         clipBehavior: Clip.antiAlias,
         margin: EdgeInsets.zero,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            AspectRatio(
-              aspectRatio: 16 / 9,
-              child: NativeCachedImage(
+        child: AspectRatio(
+          aspectRatio: 16 / 9,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              NativeCachedImage(
                 url: image.imageUrl,
-                fit: BoxFit.contain,
-                cacheWidth: 720,
-                cacheHeight: 720,
+                cacheWidth: 1080,
                 excludeFromSemantics: true,
+                imageBuilder: (context, provider) => TweenAnimationBuilder(
+                  duration: const Duration(milliseconds: 360),
+                  curve: Curves.easeOutCubic,
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  child: Image(image: provider, fit: BoxFit.cover),
+                  builder: (context, value, child) {
+                    return Opacity(
+                      opacity: value,
+                      child: Transform.scale(
+                        scale: 0.98 + value * 0.02,
+                        child: child,
+                      ),
+                    );
+                  },
+                ),
                 placeholder: const ColoredBox(
                   color: Color(0xFFE1E7E4),
                   child: Center(child: CircularProgressIndicator()),
@@ -179,25 +195,33 @@ class _GalleryTile extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 52,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'IMAGE ${image.id}',
-                    semanticsLabel: 'Image ID ${image.id}',
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.2,
+              Positioned(
+                left: 12,
+                bottom: 12,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: const Color(0xE6192523),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 13,
+                      vertical: 8,
+                    ),
+                    child: Text(
+                      'IMAGE ${image.id}',
+                      semanticsLabel: 'Image ID ${image.id}',
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
