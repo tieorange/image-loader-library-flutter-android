@@ -53,6 +53,11 @@ by the candidate.
 lib/
   image_cache_plugin.dart
   src/
+    cached_image_file.dart
+    image_cache_client.dart
+    image_cache_exception.dart
+    image_cache_plugin.dart
+    native_cached_image.dart
 android/src/main/kotlin/com/tieorange/image_cache_plugin/
   api/
   domain/

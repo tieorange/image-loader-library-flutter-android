@@ -5,3 +5,5 @@
 - Add the native coroutine image downloader, persistent four-hour disk cache,
   process-wide invalidation coordination, and Kotlin/Java `ImageLoader` API.
 - Add focused native cache, downloader, concurrency, and Java compile checks.
+- Add the MethodChannel bridge, typed Dart cache API, and file-backed image widget.
+- Add focused channel parsing, error mapping, and widget lifecycle tests.

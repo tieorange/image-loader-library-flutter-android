@@ -1,8 +1,7 @@
 # image_cache_plugin
 
-`image_cache_plugin` is an Android-only Flutter plugin under development. Its
-native Kotlin image loader is implemented; the Flutter MethodChannel and widget
-API are not implemented yet.
+`image_cache_plugin` is an Android-only Flutter plugin for downloading remote
+images into a persistent native cache and displaying the resulting files.
 
 The project will provide a native Kotlin image loader connected to Flutter
 through a platform bridge. It is designed around a persistent on-device image
@@ -13,6 +12,50 @@ cache with a four-hour freshness period.
 The native `ImageLoader` supports Kotlin suspend calls, Java callbacks, and
 `ImageView` targets. It uses `HttpURLConnection` and Kotlin Coroutines without
 an image, network, or persistence SDK.
+
+## Flutter usage
+
+```dart
+final cache = ImageCachePlugin();
+final file = await cache.loadImage('https://example.com/image.jpg');
+await cache.evictImage('https://example.com/image.jpg');
+await cache.clearCache();
+
+NativeCachedImage(
+  url: 'https://example.com/image.jpg',
+  placeholder: const CircularProgressIndicator(),
+  errorBuilder: (context, error) => const Icon(Icons.error),
+  fit: BoxFit.cover,
+)
+```
+
+`NativeCachedImage` supports dimensions, alignment, semantics, decode cache
+dimensions, and custom image and error builders. `ImageCacheClient` is
+injectable for tests and alternate hosts.
+
+The channel returns a file path rather than encoded bytes. This avoids copying
+whole images across MethodChannel and lets Flutter use a file-backed image
+provider directly.
+
+## MethodChannel contract
+
+The channel is `com.tieorange.image_cache_plugin/methods`.
+
+| Method | Arguments | Success result |
+| --- | --- | --- |
+| `loadImage` | `{url: String}` | `{path: String, source: network\|disk, cachedAtMilliseconds: int}` |
+| `evictImage` | `{url: String}` | `null` |
+| `clearCache` | none | `null` |
+
+| Error code | Meaning |
+| --- | --- |
+| `invalid_argument` | The URL argument is absent or invalid. |
+| `network_error` | The download failed. |
+| `http_error` | The server returned an unsuccessful status. |
+| `cache_error` | A cache file operation failed. |
+| `invalid_image` | Downloaded content is not a supported image. |
+| `cancelled` | The operation or plugin lifecycle was cancelled. |
+| `internal_error` | An unexpected native failure occurred. |
 
 ## Native usage
 
@@ -86,5 +129,5 @@ flutter pub get
 flutter build apk --debug
 ```
 
-Exact prerequisites, usage, architecture, and build instructions will be added
-as the Flutter-facing implementation becomes available.
+The Android bridge owns its coroutine lifecycle and completes pending calls as
+cancelled when detached.
