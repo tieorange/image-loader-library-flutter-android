@@ -11,3 +11,6 @@
   mapping, native cache boundary, and dependency composition root.
 - Add the responsive example gallery UI, Cubit ViewModel, cache-clear feedback,
   and focused presentation tests.
+- Complete public delivery documentation for APIs, architecture, cache
+  semantics, verification, limitations, and production extensions.
+- Add the gallery screenshot and record manual acceptance on Android API 34.
